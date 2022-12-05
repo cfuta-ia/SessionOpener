@@ -11,18 +11,19 @@ class Manager:
     """Client opener manager class, takes in commands to add/delete a 
     new client session or terminate the whole browser"""
     _servicePath = "./venv/bin/geckodriver"
-    def __init__(self, deviceIP, devicePort):
+    def __init__(self):
         """Starts a browser session on manager & opens first session"""
         self.driver = None
-        self.client = self.Client(ip=deviceIP, port=devicePort)
+        self.client = None
         self.counter = SessionCount()
 
-    def startBrowser(self):
-        """Initialize manager -- start the browser"""
+    def startBrowser(self, deviceIP='localhost', devicePort='8088'):
+        """Initialize manager -- start the browser & set the browser client"""
         if self.driver:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
         else:
             self.driver = Firefox(service=Service(self._servicePath))
+            self.setClientAttributes(deviceIP, devicePort)
             self.client.newSession(self.driver, newTab=False)
             self.counter.setCount(self.getTabCount())
             status = self.getManagerStatus(Status.GOOD)
@@ -34,6 +35,7 @@ class Manager:
             self.driver.quit()
             status = self.getManagerStatus(Status.TERMINATE_SUCCESS)
             self.driver = None
+            self.client = None
             self.counter.reset
         else:
             status = self.getManagerStatus(Status.NO_BROWSER)
@@ -79,6 +81,11 @@ class Manager:
     def getManagerStatus(self, state):
         """Get the manager status to be returned by the manager functions"""
         return {'benchmark': self.counter.toDict, 'status': state.value}
+
+    def setClientAttributes(self, deviceIP, devicePort):
+        """Set the client attributes such as IP address and port for the device gateway being tested"""
+        self.client = self.Client(ip=deviceIP, port=devicePort)
+        return None
 
     class Client:
         """Client opener class to open the client url in the supplied driver"""

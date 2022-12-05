@@ -15,7 +15,12 @@ def start_service(ip=None, port=None):
         flask app
     """
     app = Flask(__name__)
-    app.manager = Manager(deviceIP=ip, devicePort=port)
+    app.manager = Manager()
+
+    @app.route('/testing', methods=['GET'])
+    def test():
+        """ """
+        return 1
 
     @app.route('/startBrowser')
     def startBrowser():
