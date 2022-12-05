@@ -2,6 +2,7 @@
 
 # Imports
 from flask import Flask
+from flask import request
 import os, signal
 from .util.manager import Manager
 
@@ -25,7 +26,11 @@ def start_service(ip=None, port=None):
     @app.route('/startBrowser')
     def startBrowser():
         """ """
-        return app.manager.startBrowser()
+        args = request.args
+        if ('deviceIP' in args.keys()) and ('devicePort' in args.keys()) and (len(args.keys()) == 2):
+            return app.manager.startBrowser()
+        else:
+            return {'benchmark': None, 'status': {'message': 'Request object can only contain the keys: "deviceIP" and "devicePort"', 'value': False}}
     
     @app.route('/endBrowser')
     def endBrowser():
