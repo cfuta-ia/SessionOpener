@@ -5,6 +5,7 @@ from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.service import Service
 from .counter import SessionCount
 from .status import Status
+from .functions import getOS
 
 # Client Opener Manager
 class Manager:
@@ -16,13 +17,18 @@ class Manager:
         self.driver = None
         self.client = None
         self.counter = SessionCount()
+    
+    @property
+    def driver_config(self):
+        """Function get the os of the system and return the args for the selenium driver"""
+        return {'service': Service(self._servicePath)}
 
     def startBrowser(self, deviceIP='localhost', devicePort='8088'):
         """Initialize manager -- start the browser & set the browser client"""
         if self.driver:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
         else:
-            self.driver = Firefox(service=Service(self._servicePath))
+            self.driver = Firefox(**self.driver_config)
             self.setClientAttributes(deviceIP, devicePort)
             self.client.newSession(self.driver, newTab=False)
             self.counter.setCount(self.getTabCount())
