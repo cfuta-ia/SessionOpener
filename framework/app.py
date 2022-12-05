@@ -18,12 +18,12 @@ def start_service(ip=None, port=None):
     app = Flask(__name__)
     app.manager = Manager()
 
-    @app.route('/testing', methods=['GET'])
+    @app.route('/testing', methods=['POST'])
     def test():
         """ """
         return 1
 
-    @app.route('/startBrowser')
+    @app.route('/startBrowser', methods=['POST'])
     def startBrowser():
         """ """
         args = request.args
@@ -32,22 +32,22 @@ def start_service(ip=None, port=None):
         else:
             return {'benchmark': None, 'status': {'message': 'Request object can only contain the keys: "deviceIP" and "devicePort"', 'value': False}}
     
-    @app.route('/endBrowser')
+    @app.route('/endBrowser', methods=['POST'])
     def endBrowser():
         """ """
         return app.manager.endBrowser()
 
-    @app.route('/addSession')
+    @app.route('/addSession', methods=['POST'])
     def addSession():
         """ """
         return app.manager.addSession()
 
-    @app.route('/removeSession')
+    @app.route('/removeSession', methods=['POST'])
     def removeSession():
         """ """
         return app.manager.removeSession()
 
-    @app.route('/shutdown', methods=['GET'])
+    @app.route('/shutdown', methods=['POST'])
     def shutdown():
         app.manager.terminate()
         os.kill(os.getpid(), signal.SIGINT)
