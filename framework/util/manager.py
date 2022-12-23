@@ -1,8 +1,11 @@
 #!venv/bin/python3
 
 # Imports
-from selenium.webdriver import Firefox
-from selenium.webdriver.firefox.service import Service
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+#from selenium.webdriver import Firefox
+#from selenium.webdriver.firefox.service import Service
 from .counter import SessionCount
 from .status import Status
 from .functions import getOS
@@ -28,7 +31,8 @@ class Manager:
         if self.driver:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
         else:
-            self.driver = Firefox(**self.driver_config)
+            #self.driver = Firefox(**self.driver_config)
+            self.driver = Chrome(ChromeDriverManager().install())
             self.setClientAttributes(deviceIP, devicePort)
             self.client.newSession(self.driver, newTab=False)
             self.counter.setCount(self.getTabCount())
