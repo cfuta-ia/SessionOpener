@@ -5,6 +5,7 @@ from flask import Flask
 from flask import request
 import os, signal
 from .util.manager import Manager
+import datetime
 
 def start_service(ip=None, port=None):
     """Start the flask service
@@ -21,7 +22,7 @@ def start_service(ip=None, port=None):
     @app.route('/testing', methods=['POST'])
     def test():
         """ """
-        return {'value': 1}
+        return {'timestamp': datetime.datetime.now()}
 
     @app.route('/startBrowser', methods=['POST'])
     def startBrowser():
