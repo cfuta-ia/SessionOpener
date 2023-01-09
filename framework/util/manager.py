@@ -14,7 +14,7 @@ from .functions import getOS
 class Manager:
     """Client opener manager class, takes in commands to add/delete a 
     new client session or terminate the whole browser"""
-    _servicePath = "./venv/bin/geckodriver"
+    #_servicePath = "./venv/bin/geckodriver"
     def __init__(self):
         """Starts a browser session on manager & opens first session"""
         self.driver = None
