@@ -21,7 +21,7 @@ def start_service(ip=None, port=None):
     @app.route('/testing', methods=['POST'])
     def test():
         """ """
-        return 1
+        return {'value': 1}
 
     @app.route('/startBrowser', methods=['POST'])
     def startBrowser():

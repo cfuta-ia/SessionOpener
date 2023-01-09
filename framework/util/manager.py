@@ -26,7 +26,7 @@ class Manager:
         """Function get the os of the system and return the args for the selenium driver"""
         return {'service': Service(self._servicePath)}
 
-    def startBrowser(self, deviceIP='localhost', devicePort='8088'):
+    def startBrowser(self, deviceIP='0.0.0.0', devicePort='8088'):
         """Initialize manager -- start the browser & set the browser client"""
         if self.driver:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
