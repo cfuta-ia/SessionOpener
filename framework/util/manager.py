@@ -37,6 +37,8 @@ class Manager:
             self.client.newSession(self.driver, newTab=False)
             self.counter.setCount(self.getTabCount())
             status = self.getManagerStatus(Status.GOOD)
+            print(self.client)
+            print(self.counter)
         return status
     
     def endBrowser(self):
@@ -58,6 +60,7 @@ class Manager:
         
     def addSession(self):
         """Add new session through the client class"""
+        print(self.driver)
         if self.driver:
             self.client.newSession(self.driver)
             self.counter.setCount(self.getTabCount())
@@ -116,7 +119,8 @@ class Manager:
                 newTab: boolean variable to open client on a new tab or not
             """
             if newTab:
-                driver.switch_to.new_window('')
+                pass
+                #driver.switch_to.new_window('')
             #driver.get(self.deviceURL)
             driver.get('http://example.com')
             return None
