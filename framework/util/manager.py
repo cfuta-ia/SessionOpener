@@ -4,39 +4,39 @@
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-#from selenium.webdriver import Firefox
-#from selenium.webdriver.firefox.service import Service
 from .counter import SessionCount
 from .status import Status
-from .functions import getOS
 
 # Client Opener Manager
 class Manager:
-    """Client opener manager class, takes in commands to add/delete a 
-    new client session or terminate the whole browser"""
-    #_servicePath = "./venv/bin/geckodriver"
+    """Client opener manager class, takes in commands to add/remove a client session or terminate the whole browser."""
+    WAIT_TIME = 2 # Action wait time
     def __init__(self):
-        """Starts a browser session on manager & opens first session"""
+        """Initial properties of the manager class"""
         self.driver = None
-        self.client = None
         self.deviceURL = None
         self.counter = SessionCount()
     
-    @property
-    def driver_config(self):
-        """Function get the os of the system and return the args for the selenium driver"""
-        return {'service': Service(ChromeDriverManager().install())}
-
+    # Browser Methods
     def startBrowser(self, deviceIP='0.0.0.0', devicePort='8088'):
-        """Initialize manager -- start the browser & set the browser client"""
+        """Initialize manager -- start the browser & set the browser client
+        
+        Args:
+            deviceIP: ip address of the device being tested
+            devicePort: port that the device is running the gateway through
+        """
         if self.driver:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
         else:
-            #self.driver = Firefox(**self.driver_config)
             self.driver = Chrome(**self.driver_config)
             self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
-            self.newSession(newTab=False)
-            self.counter.setCount(self.getTabCount())
+
+            self.driver.implicitly_wait(self.WAIT_TIME)
+            self.driver.get(self.deviceURL)
+            self.setDriverFocus()
+
+            #self.newSession(newTab=False)
+            self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
         return status
     
@@ -60,119 +60,102 @@ class Manager:
     def addSession(self):
         """Add new session through the client class"""
         if self.driver:
-            print('New Session Being Added')
-            self.newSession()
-            #self.client.newSession(self.driver)
-            print('New Session Added')
-            self.counter.setCount(self.getTabCount())
-            print('New Session Counted')
+            #self.newSession()
+
+            self.driver.switch_to.new_window()
+            self.driver.implicitly_wait(self.WAIT_TIME)
+            self.driver.get(self.deviceURL)
+            self.setDriverFocus()
+
+            self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
         else:
-            print('No Driver')
             status = self.getManagerStatus(Status.NO_BROWSER)
         return status
 
     def removeSession(self):
         """Remove the latest session added to the driver (browser)"""
         if self.driver:
-            if self.getTabCount() == 1:
+            if self.tabCount == 1:
                 status = self.getManagerStatus(Status.CANNOT_REMOVE)
             else:
-                self.driver.switch_to.window(self.getTabID())
+                #self.closeSession()
+                self.setDriverFocus(-1)
                 self.driver.close()
-                self.driver.switch_to.window(self.getTabID(index=0))
-                self.counter.setCount(self.getTabCount())
+                self.setDriverFocus()
+                self.counter.setCount(self.tabCount)
                 status = self.getManagerStatus(Status.GOOD)
         else:
             status = self.getManagerStatus(Status.NO_BROWSER)
         return status
-    
-    def getTabID(self, index=-1):
-        """Get the tab by index in the browser"""
-        return self.driver.window_handles[index]
-    
-    def getTabCount(self):
-        """Get the current count of open tabs"""
-        return len(self.driver.window_handles)
-    
-    def getManagerStatus(self, state):
-        """Get the manager status to be returned by the manager functions"""
-        return {'benchmark': self.counter.toDict, 'status': state.value}
-
-    def setClientAttributes(self, deviceIP, devicePort):
-        """Set the client attributes such as IP address and port for the device gateway being tested"""
-        self.client = self.Client(ip=deviceIP, port=devicePort)
-        return None
 
     def newSession(self, newTab=True):
-        """ """
-        print('Browser newSession function')
+        """Create a new client session in the open driver/browser
+        
+        Args:
+            newTab: boolean for whether to open the deviceURL on a new tab (default: True)
+        """
         if newTab:
-            print('Browser switching to new tab')
-            
-            #print(self.windowScript)
-            #self.driver.switch_to.new_window('tab')
-            #script = "window.open('{}');".format('')
-            #print(script)
-            #self.driver.execute_script(self.windowScript)
-            print('Browser new tab open')
-            #self.driver.switch_to.window(self.getTabID())
-            print('Browser switched to new tab')
-        else:
-            self.driver.get(self.deviceURL)
+            self.driver.switch_to.new_window()
+            self.driver.implicitly_wait(self.WAIT_TIME)
+        self.driver.get(self.deviceURL)
+        self.setDriverFocus()
         return None
 
+    def closeSession(self):
+        """Close the last browser tab opened"""
+        self.setDriverFocus(-1)
+        self.driver.close()
+        self.setDriverFocus()
+        return None
+
+    # Properties
+    # Other class properties include: driver, deviceURL, counter, & WAIT_TIME
     @property
-    def windowScript(self):
-        """ """
-        return f"window.open('{self.deviceURL}', 'tab{self.getTabCount()}');"
+    def tabCount(self):
+        """Current tab count of the driver/browser"""
+        return len(self.driver.window_handles) if self.driver else 0
 
+    @property
+    def driver_config(self):
+        """Function get the os of the system and return the args for the selenium driver"""
+        return {'service': Service(ChromeDriverManager().install())}
+
+    # Setter Methods
     def setDeviceURL(self, deviceIP, devicePort, protocol='http', project='SessionOpener', view=''):
-        """ """
+        """Generate the url string for the device being tested and set as the 'deviceURL' property
+            
+        Args:
+            deviceIP: device ip address to open the client with
+            devicePort: port the ignition gateway is running on
+            protocol: http or https protocol to use for the client (default: http)
+            project: name of the project on the device (default: SessionOpener)
+            view: page to use for the client test (default: '')
+        """
         #url = f"{protocol}://{deviceIP}:{devicePort}/data/perspective/client/{project}/{view}"
-        url = 'http://example.com'
+        url = 'https://www.google.com/'
         self.deviceURL = url
+        return None
 
-    class Client:
-        """Client opener class to open the client url in the supplied driver"""
-        def __init__(self, protocol='http', ip='localhost', port='8088', project='SessionOpener', view=''):
-            """Opens a new client session on the input driver
-            
-            Args:
-                driver: driver (browser) to open the session on
-                newTab: boolean to open new session on a new tab or not
-            """
-            self._deviceURL(protocol=protocol, ip=ip, port=port, project=project, view=view)
+    def setDriverFocus(self, tabIndex=0):
+        """Function to set the current driver's focus to the specified tab (by index)"""
+        if self.driver:
+            self.driver.switch_to.window(self.getTabID(index=tabIndex))
+        return None
 
-        def newSession(self, driver, newTab=True):
-            """Function to open a new session with the supplied driver and whether to open a new tab or not
-            
-            Args:
-                driver: selenium driver that new client will be opened on
-                newTab: boolean variable to open client on a new tab or not
-            """
-            print('Client newSession function')
-            if newTab:
-                print('Client switching to new tab')
-                driver.execute_script("window.open();")
-                driver.switch_to.window(driver.window_handles[-1])
-                #driver.switch_to.new_window('')
-                print('Client switched to new tab')
-            #driver.get(self.deviceURL)
-            print('Client pre get')
-            driver.get('http://example.com')
-            driver.switch_to.window(driver.window_handles[0])
-            print('Client post get')
-            return None
+    # Getter Methods
+    def getManagerStatus(self, state):
+        """Get the manager status to be returned by the manager functions
+        
+        Args:
+            state: status Enum with a message, boolean value as it's value
+        """
+        return {'benchmark': self.counter.toDict, 'status': state.value}
 
-        def _deviceURL(self, protocol, ip, port, project, view):
-            """Generate the url string for the client to open from the device
-            
-            Args:
-                protocol: http or https protocol to use for the client
-                ip: device ip address to open the client with
-                port: port the ignition gateway is running on
-                project: name of the project on the device
-                view: page to use for the client test
-            """
-            self.deviceURL = f"{protocol}://{ip}:{port}/data/perspective/client/{project}/{view}"
+    def getTabID(self, index=-1):
+        """Get the tab by index in the browser
+        
+        Args:
+            index: tab index to get the ID for
+        """
+        return self.driver.window_handles[index]

@@ -11,10 +11,6 @@ for _ in range(3):
     manager.addSession()
 manager.removeSession()
 manager.addSession()
-try:
-    b = 1/0
-except Exception as exp:
-    print(exp)
 
 inp = input()
 manager.terminate()
