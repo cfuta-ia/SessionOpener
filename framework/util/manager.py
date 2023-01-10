@@ -1,11 +1,6 @@
 #!venv/bin/python3
 
 # Imports
-from selenium.webdriver import Chrome
-from selenium.webdriver import ChromeOptions
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
 from selenium.webdriver import Firefox
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.firefox.service import Service
