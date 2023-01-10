@@ -56,10 +56,11 @@ class Manager:
     def addSession(self):
         """Add new session through the client class"""
         if self.driver:
-            currentWindowCount = self.tabCount
-            self.driver.execute_script(f'''window.open("{self.deviceURL}");''')
-            WebDriverWait(self.driver, self.WAIT_TIME).until(EC.number_of_windows_to_be(currentWindowCount + 1))
-            self.driver.switch_to.window(self.driver.window_handles[-1])
+            self.driver.switch_to.new_window('tab')
+            #currentWindowCount = self.tabCount
+            #self.driver.execute_script(f'''window.open("{self.deviceURL}");''')
+            #WebDriverWait(self.driver, self.WAIT_TIME).until(EC.number_of_windows_to_be(currentWindowCount + 1))
+            #self.driver.switch_to.window(self.driver.window_handles[-1])
             
             #self.newSession()
             #self.driver.execute_script('''window.open();''')
@@ -98,7 +99,7 @@ class Manager:
             newTab: boolean for whether to open the deviceURL on a new tab (default: True)
         """
         if newTab:
-            self.driver.switch_to.new_window()
+            self.driver.switch_to.new_window('tab')
             sleep(self.WAIT_TIME)
             #self.driver.implicitly_wait(self.WAIT_TIME)
         self.driver.get(self.deviceURL)
