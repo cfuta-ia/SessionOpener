@@ -109,7 +109,8 @@ class Manager:
         print('Browser newSession function')
         if newTab:
             print('Browser switching to new tab')
-            print(self.windowScript)
+            
+            #print(self.windowScript)
             #self.driver.switch_to.new_window('tab')
             #script = "window.open('{}');".format('')
             #print(script)
