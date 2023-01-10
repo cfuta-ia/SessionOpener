@@ -124,10 +124,15 @@ class Manager:
                 driver: selenium driver that new client will be opened on
                 newTab: boolean variable to open client on a new tab or not
             """
+            print('Client newSession function')
             if newTab:
+                print('Client switching to new tab')
                 driver.switch_to.new_window('')
+                print('Client switched to new tab')
             #driver.get(self.deviceURL)
+            print('Client pre get')
             driver.get('http://example.com')
+            print('Client post get')
             return None
 
         def _deviceURL(self, protocol, ip, port, project, view):

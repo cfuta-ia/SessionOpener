@@ -41,6 +41,7 @@ def start_service(ip=None, port=None):
     @app.route('/addSession', methods=['POST'])
     def addSession():
         """ """
+        print('Flask addSession function')
         return app.manager.addSession()
 
     @app.route('/removeSession', methods=['POST'])
