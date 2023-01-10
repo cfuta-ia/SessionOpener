@@ -19,6 +19,7 @@ class Manager:
         """Starts a browser session on manager & opens first session"""
         self.driver = None
         self.client = None
+        self.deviceURL = None
         self.counter = SessionCount()
     
     @property
@@ -33,8 +34,8 @@ class Manager:
         else:
             #self.driver = Firefox(**self.driver_config)
             self.driver = Chrome(**self.driver_config)
-            self.setClientAttributes(deviceIP, devicePort)
-            self.client.newSession(self.driver, newTab=False)
+            self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
+            self.newSession(newTab=False)
             self.counter.setCount(self.getTabCount())
             status = self.getManagerStatus(Status.GOOD)
         return status
@@ -58,20 +59,17 @@ class Manager:
         
     def addSession(self):
         """Add new session through the client class"""
-        try:
-            if self.driver:
-                print('New Session Being Added')
-                self.client.newSession(self.driver)
-                print('New Session Added')
-                self.counter.setCount(self.getTabCount())
-                print('New Session Counted')
-                status = self.getManagerStatus(Status.GOOD)
-            else:
-                print('No Driver')
-                status = self.getManagerStatus(Status.NO_BROWSER)
-        except Exception as exp:
-            print(exp)
-            status = {'message': exp, 'value': False}
+        if self.driver:
+            print('New Session Being Added')
+            self.newSession()
+            #self.client.newSession(self.driver)
+            print('New Session Added')
+            self.counter.setCount(self.getTabCount())
+            print('New Session Counted')
+            status = self.getManagerStatus(Status.GOOD)
+        else:
+            print('No Driver')
+            status = self.getManagerStatus(Status.NO_BROWSER)
         return status
 
     def removeSession(self):
@@ -106,6 +104,27 @@ class Manager:
         self.client = self.Client(ip=deviceIP, port=devicePort)
         return None
 
+    def newSession(self, newTab=True):
+        """ """
+        print('Browser newSession function')
+        if newTab:
+            print('Browser switching to new tab')
+            script = "window.open('{}');".format('')
+            print(script)
+            self.driver.execute_script(script)
+            print('Browser new tab open')
+            #self.driver.switch_to.window(self.getTabID())
+            print('Browser switched to new tab')
+        else:
+            self.driver.get(self.deviceURL)
+        return None
+
+    def setDeviceURL(self, deviceIP, devicePort, protocol='http', project='SessionOpener', view=''):
+        """ """
+        #url = f"{protocol}://{deviceIP}:{devicePort}/data/perspective/client/{project}/{view}"
+        url = 'http://example.com'
+        self.deviceURL = url
+
     class Client:
         """Client opener class to open the client url in the supplied driver"""
         def __init__(self, protocol='http', ip='localhost', port='8088', project='SessionOpener', view=''):
@@ -127,11 +146,14 @@ class Manager:
             print('Client newSession function')
             if newTab:
                 print('Client switching to new tab')
-                driver.switch_to.new_window('')
+                driver.execute_script("window.open();")
+                driver.switch_to.window(driver.window_handles[-1])
+                #driver.switch_to.new_window('')
                 print('Client switched to new tab')
             #driver.get(self.deviceURL)
             print('Client pre get')
             driver.get('http://example.com')
+            driver.switch_to.window(driver.window_handles[0])
             print('Client post get')
             return None
 
