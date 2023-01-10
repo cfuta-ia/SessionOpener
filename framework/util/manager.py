@@ -34,13 +34,6 @@ class Manager:
             self.driver = Chrome(**self.driver_config)
             self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
             self.driver.get(self.deviceURL)
-            #self.newSession(newTab=False)
-            #self.newSession2()
-
-            #self.driver.implicitly_wait(self.WAIT_TIME)
-            #self.driver.get(self.deviceURL)
-            #self.setDriverFocus(-1)
-
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
         return status
