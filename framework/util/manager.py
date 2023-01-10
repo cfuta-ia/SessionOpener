@@ -30,9 +30,9 @@ class Manager:
             self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
             self.newSession(newTab=False)
 
-            #self.driver.implicitly_wait(self.WAIT_TIME)
-            #self.driver.get(self.deviceURL)
-            #self.setDriverFocus()
+            self.driver.implicitly_wait(self.WAIT_TIME)
+            self.driver.get(self.deviceURL)
+            self.setDriverFocus()
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
@@ -56,12 +56,12 @@ class Manager:
     def addSession(self):
         """Add new session through the client class"""
         if self.driver:
-            self.newSession()
+            #self.newSession()
 
-            #self.driver.switch_to.new_window()
-            #self.driver.implicitly_wait(self.WAIT_TIME)
-            #self.driver.get(self.deviceURL)
-            #self.setDriverFocus()
+            self.driver.switch_to.new_window()
+            self.driver.implicitly_wait(self.WAIT_TIME)
+            self.driver.get(self.deviceURL)
+            self.setDriverFocus()
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
