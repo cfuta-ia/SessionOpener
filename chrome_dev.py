@@ -8,8 +8,8 @@ manager = Manager()
 
 manager.startBrowser()
 manager.addSession()
-manager.removeSession()
-manager.addSession()
+#manager.removeSession()
+#manager.addSession()
 
 inp = input()
 manager.terminate()

@@ -58,11 +58,11 @@ class Manager:
         """Add new session through the client class"""
         if self.driver:
             #self.newSession()
-
-            self.driver.switch_to.new_window()
-            sleep(self.WAIT_TIME)
-            self.driver.get(self.deviceURL)
-            self.setDriverFocus(-1)
+            self.driver.execute_script('''window.open();''')
+            #self.driver.switch_to.new_window()
+            #sleep(self.WAIT_TIME)
+            #self.driver.get(self.deviceURL)
+            #self.setDriverFocus(-1)
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
