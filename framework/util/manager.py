@@ -32,7 +32,7 @@ class Manager:
 
             self.driver.implicitly_wait(self.WAIT_TIME)
             self.driver.get(self.deviceURL)
-            self.setDriverFocus()
+            self.setDriverFocus(-1)
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
@@ -61,7 +61,7 @@ class Manager:
             self.driver.switch_to.new_window()
             self.driver.implicitly_wait(self.WAIT_TIME)
             self.driver.get(self.deviceURL)
-            self.setDriverFocus()
+            self.setDriverFocus(-1)
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
@@ -97,14 +97,13 @@ class Manager:
             self.driver.switch_to.new_window()
             self.driver.implicitly_wait(self.WAIT_TIME)
         self.driver.get(self.deviceURL)
-        self.setDriverFocus()
+        self.setDriverFocus(-1)
         return None
 
     def closeSession(self):
         """Close the last browser tab opened"""
-        self.setDriverFocus(-1)
         self.driver.close()
-        self.setDriverFocus()
+        self.setDriverFocus(-1)
         return None
 
     # Properties
