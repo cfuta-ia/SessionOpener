@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from .counter import SessionCount
 from .status import Status
+from time import sleep
 
 # Client Opener Manager
 class Manager:
@@ -30,9 +31,9 @@ class Manager:
             self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
             self.newSession(newTab=False)
 
-            self.driver.implicitly_wait(self.WAIT_TIME)
-            self.driver.get(self.deviceURL)
-            self.setDriverFocus(-1)
+            #self.driver.implicitly_wait(self.WAIT_TIME)
+            #self.driver.get(self.deviceURL)
+            #self.setDriverFocus(-1)
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
@@ -95,7 +96,8 @@ class Manager:
         """
         if newTab:
             self.driver.switch_to.new_window()
-            self.driver.implicitly_wait(self.WAIT_TIME)
+            sleep(self.WAIT_TIME)
+            #self.driver.implicitly_wait(self.WAIT_TIME)
         self.driver.get(self.deviceURL)
         self.setDriverFocus(-1)
         return None
@@ -103,6 +105,7 @@ class Manager:
     def closeSession(self):
         """Close the last browser tab opened"""
         self.driver.close()
+        sleep(self.WAIT_TIME)
         self.setDriverFocus(-1)
         return None
 
