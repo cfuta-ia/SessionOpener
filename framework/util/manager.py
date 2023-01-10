@@ -24,7 +24,7 @@ class Manager:
     @property
     def driver_config(self):
         """Function get the os of the system and return the args for the selenium driver"""
-        return {'service': Service(self._servicePath)}
+        return {'service': Service(ChromeDriverManager().install())}
 
     def startBrowser(self, deviceIP='0.0.0.0', devicePort='8088'):
         """Initialize manager -- start the browser & set the browser client"""
@@ -32,13 +32,11 @@ class Manager:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
         else:
             #self.driver = Firefox(**self.driver_config)
-            self.driver = Chrome(ChromeDriverManager().install())
+            self.driver = Chrome(**self.driver_config)
             self.setClientAttributes(deviceIP, devicePort)
             self.client.newSession(self.driver, newTab=False)
             self.counter.setCount(self.getTabCount())
             status = self.getManagerStatus(Status.GOOD)
-            print(self.client)
-            print(self.counter)
         return status
     
     def endBrowser(self):
@@ -60,13 +58,20 @@ class Manager:
         
     def addSession(self):
         """Add new session through the client class"""
-        print(self.driver)
-        if self.driver:
-            self.client.newSession(self.driver)
-            self.counter.setCount(self.getTabCount())
-            status = self.getManagerStatus(Status.GOOD)
-        else:
-            status = self.getManagerStatus(Status.NO_BROWSER)
+        try:
+            if self.driver:
+                print('New Session Being Added')
+                self.client.newSession(self.driver)
+                print('New Session Added')
+                self.counter.setCount(self.getTabCount())
+                print('New Session Counted')
+                status = self.getManagerStatus(Status.GOOD)
+            else:
+                print('No Driver')
+                status = self.getManagerStatus(Status.NO_BROWSER)
+        except Exception as exp:
+            print(exp)
+            status = {'message': exp, 'value': False}
         return status
 
     def removeSession(self):
@@ -75,8 +80,9 @@ class Manager:
             if self.getTabCount() == 1:
                 status = self.getManagerStatus(Status.CANNOT_REMOVE)
             else:
-                self.driver.close()
                 self.driver.switch_to.window(self.getTabID())
+                self.driver.close()
+                self.driver.switch_to.window(self.getTabID(index=0))
                 self.counter.setCount(self.getTabCount())
                 status = self.getManagerStatus(Status.GOOD)
         else:
@@ -119,8 +125,7 @@ class Manager:
                 newTab: boolean variable to open client on a new tab or not
             """
             if newTab:
-                pass
-                #driver.switch_to.new_window('')
+                driver.switch_to.new_window('')
             #driver.get(self.deviceURL)
             driver.get('http://example.com')
             return None

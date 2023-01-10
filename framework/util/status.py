@@ -10,3 +10,4 @@ class Status(Enum):
     NO_BROWSER = {'message': 'Browser has not been started yet', 'value': False}
     BROWSER_EXISTS = {'message': 'Browser already exists, terminate the existing one to start a new test', 'value': True}
     CANNOT_REMOVE = {'message': 'Browser must have atleast one tab open', 'value': False}
+    
