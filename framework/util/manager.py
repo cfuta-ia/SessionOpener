@@ -80,11 +80,10 @@ class Manager:
             if self.tabCount == 1:
                 status = self.getManagerStatus(Status.CANNOT_REMOVE)
             else:
-                self.closeSession()
+                #self.closeSession()
                 
-                #self.setDriverFocus(-1)
-                #self.driver.close()
-                #self.setDriverFocus()
+                self.driver.close()
+                self.setDriverFocus(-1)
                 
                 self.counter.setCount(self.tabCount)
                 status = self.getManagerStatus(Status.GOOD)
