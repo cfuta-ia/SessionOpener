@@ -8,6 +8,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from selenium.webdriver import Firefox
 from selenium.webdriver import FirefoxOptions
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 from .counter import SessionCount
 from .status import Status
@@ -35,7 +38,7 @@ class Manager:
         if self.driver:
             status = self.getManagerStatus(Status.BROWSER_EXISTS)
         else:
-            self.driver = Chrome(**self.driver_config)
+            self.driver = Firefox(**self.driver_config)
             self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
             self.driver.get(self.deviceURL)
             self.counter.setCount(self.tabCount)
@@ -134,10 +137,10 @@ class Manager:
     @property
     def driver_config(self):
         """Function get the os of the system and return the args for the selenium driver"""
-        options = ChromeOptions()
-        options.add_argument('start-maximized')
-        options.add_argument('disable-infobars')
-        return {'service': Service(ChromeDriverManager().install()), 'chrome_options': options}
+        options = FirefoxOptions()
+        options.headless = False
+        #options.binary_location = ''
+        return {'service': Service(GeckoDriverManager().install()), 'options': options}
 
     # Setter Methods
     def setDeviceURL(self, deviceIP, devicePort, protocol='http', project='SessionOpener', view=''):
