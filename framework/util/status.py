@@ -2,7 +2,6 @@
 
 # Imports
 from enum import Enum
-
 class Status(Enum):
     """Error Enum that is returned by Flask endpoints"""
     GOOD = {'message': 'No error', 'value': True}
