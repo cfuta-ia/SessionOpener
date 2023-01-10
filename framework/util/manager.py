@@ -109,15 +109,22 @@ class Manager:
         print('Browser newSession function')
         if newTab:
             print('Browser switching to new tab')
-            script = "window.open('{}');".format('')
-            print(script)
-            self.driver.execute_script(script)
+            print(self.windowScript)
+            #self.driver.switch_to.new_window('tab')
+            #script = "window.open('{}');".format('')
+            #print(script)
+            #self.driver.execute_script(self.windowScript)
             print('Browser new tab open')
             #self.driver.switch_to.window(self.getTabID())
             print('Browser switched to new tab')
         else:
             self.driver.get(self.deviceURL)
         return None
+
+    @property
+    def windowScript(self):
+        """ """
+        return f"window.open('{self.deviceURL}', 'tab{self.getTabCount()}');"
 
     def setDeviceURL(self, deviceIP, devicePort, protocol='http', project='SessionOpener', view=''):
         """ """
