@@ -7,8 +7,7 @@ from framework.util.manager import Manager
 manager = Manager()
 
 manager.startBrowser()
-for _ in range(3):
-    manager.addSession()
+manager.addSession()
 manager.removeSession()
 manager.addSession()
 

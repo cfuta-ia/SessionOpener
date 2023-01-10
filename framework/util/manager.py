@@ -13,9 +13,7 @@ class Manager:
     WAIT_TIME = 2 # Action wait time
     def __init__(self):
         """Initial properties of the manager class"""
-        self.driver = None
-        self.deviceURL = None
-        self.counter = SessionCount()
+        self.setManagerProperties()
     
     # Browser Methods
     def startBrowser(self, deviceIP='0.0.0.0', devicePort='8088'):
@@ -30,12 +28,12 @@ class Manager:
         else:
             self.driver = Chrome(**self.driver_config)
             self.setDeviceURL(deviceIP=deviceIP, devicePort=devicePort)
+            self.newSession(newTab=False)
 
-            self.driver.implicitly_wait(self.WAIT_TIME)
-            self.driver.get(self.deviceURL)
-            self.setDriverFocus()
+            #self.driver.implicitly_wait(self.WAIT_TIME)
+            #self.driver.get(self.deviceURL)
+            #self.setDriverFocus()
 
-            #self.newSession(newTab=False)
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
         return status
@@ -45,9 +43,7 @@ class Manager:
         if self.driver:
             self.driver.quit()
             status = self.getManagerStatus(Status.TERMINATE_SUCCESS)
-            self.driver = None
-            self.client = None
-            self.counter.reset
+            self.setManagerProperties()
         else:
             status = self.getManagerStatus(Status.NO_BROWSER)
         return status
@@ -60,12 +56,12 @@ class Manager:
     def addSession(self):
         """Add new session through the client class"""
         if self.driver:
-            #self.newSession()
+            self.newSession()
 
-            self.driver.switch_to.new_window()
-            self.driver.implicitly_wait(self.WAIT_TIME)
-            self.driver.get(self.deviceURL)
-            self.setDriverFocus()
+            #self.driver.switch_to.new_window()
+            #self.driver.implicitly_wait(self.WAIT_TIME)
+            #self.driver.get(self.deviceURL)
+            #self.setDriverFocus()
 
             self.counter.setCount(self.tabCount)
             status = self.getManagerStatus(Status.GOOD)
@@ -79,10 +75,12 @@ class Manager:
             if self.tabCount == 1:
                 status = self.getManagerStatus(Status.CANNOT_REMOVE)
             else:
-                #self.closeSession()
-                self.setDriverFocus(-1)
-                self.driver.close()
-                self.setDriverFocus()
+                self.closeSession()
+                
+                #self.setDriverFocus(-1)
+                #self.driver.close()
+                #self.setDriverFocus()
+                
                 self.counter.setCount(self.tabCount)
                 status = self.getManagerStatus(Status.GOOD)
         else:
@@ -141,6 +139,13 @@ class Manager:
         """Function to set the current driver's focus to the specified tab (by index)"""
         if self.driver:
             self.driver.switch_to.window(self.getTabID(index=tabIndex))
+        return None
+
+    def setManagerProperties(self):
+        """Set the properties for the manager class"""
+        self.driver = None
+        self.deviceURL = None
+        self.counter = SessionCount()
         return None
 
     # Getter Methods
