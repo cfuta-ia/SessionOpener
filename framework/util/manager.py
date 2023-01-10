@@ -60,7 +60,7 @@ class Manager:
             #self.newSession()
 
             self.driver.switch_to.new_window()
-            self.driver.implicitly_wait(self.WAIT_TIME)
+            sleep(self.WAIT_TIME)
             self.driver.get(self.deviceURL)
             self.setDriverFocus(-1)
 
