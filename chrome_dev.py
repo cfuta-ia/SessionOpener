@@ -3,13 +3,16 @@
 #from .manager import Manager
 
 from framework.util.manager import Manager
+from time import sleep
+
 
 manager = Manager()
 
 manager.startBrowser()
+
 manager.addSession()
 #manager.removeSession()
 #manager.addSession()
 
-inp = input()
+sleep(8)
 manager.terminate()
