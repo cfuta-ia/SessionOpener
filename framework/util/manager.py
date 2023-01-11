@@ -56,7 +56,7 @@ class Manager:
     def addSession(self):
         """Add new session through the client class"""
         if self.driver:
-            self.driver.switch_to.new_window('tab')
+            self.driver.switch_to.new_window()
             #currentWindowCount = self.tabCount
             #self.driver.execute_script(f'''window.open("{self.deviceURL}");''')
             #WebDriverWait(self.driver, self.WAIT_TIME).until(EC.number_of_windows_to_be(currentWindowCount + 1))
@@ -99,11 +99,12 @@ class Manager:
             newTab: boolean for whether to open the deviceURL on a new tab (default: True)
         """
         if newTab:
-            self.driver.switch_to.new_window('tab')
-            sleep(self.WAIT_TIME)
-            #self.driver.implicitly_wait(self.WAIT_TIME)
-        self.driver.get(self.deviceURL)
+            currentWindowCount = self.tabCount
+            self.driver.execute_script("window.open('');")
+            WebDriverWait(self.driver, self.WAIT_TIME).until(EC.number_of_windows_to_be(currentWindowCount + 1))
+
         self.setDriverFocus(-1)
+        self.driver.get(self.deviceURL)
         return None
 
     def closeSession(self):
@@ -134,10 +135,10 @@ class Manager:
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
         options.add_argument('enable-automation')
-        #options.add_argument('--disable-gpu')
-        #options.add_argument('--disable-browser-side-navigation')
-        #options.add_argument('--disable-deb-shm-usage')
-        #options.add_argument('--no-sandbox')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--disable-browser-side-navigation')
+        options.add_argument('--disable-deb-shm-usage')
+        options.add_argument('--no-sandbox')
         #options.add_argument('--headless')
         return {'service': Service(ChromeDriverManager().install()), 'chrome_options': options}
 
@@ -153,7 +154,7 @@ class Manager:
             view: page to use for the client test (default: '')
         """
         #url = f"{protocol}://{deviceIP}:{devicePort}/data/perspective/client/{project}/{view}"
-        url = 'https://www.google.com/'
+        url = 'http://www.example.com/'
         self.deviceURL = url
         return None
 
