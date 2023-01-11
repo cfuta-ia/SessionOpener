@@ -30,7 +30,7 @@ def start_service(ip=None, port=None):
         args = request.args
         #if ('deviceIP' in args.keys()) and ('devicePort' in args.keys()) and (len(args.keys()) == 2):
         if (set(args.keys()) == {'deviceIP', 'devicePort'}) and (len(args.keys()) == 2):
-            return app.manager.startBrowser()
+            return app.manager.startBrowser(**args)
         else:
             return {'benchmark': None, 'status': {'message': "Request object can only contain the keys: 'deviceIP' and 'devicePort'", 'value': False}}
     
