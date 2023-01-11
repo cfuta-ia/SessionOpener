@@ -7,9 +7,9 @@ from time import sleep
 
 manager = Manager()
 
-manager.startBrowser()
-
-manager.addSession()
+manager.startBrowser(deviceIP='localhost', devicePort='8188')
+#manager.clickNewTabButton()
+#manager.addSession()
 #manager.removeSession()
 #manager.addSession()
 

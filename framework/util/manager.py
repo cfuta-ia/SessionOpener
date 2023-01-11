@@ -11,6 +11,7 @@ from time import sleep
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 # Client Opener Manager
 class Manager:
@@ -112,11 +113,9 @@ class Manager:
         self.setDriverFocus(-1)
         return None
 
-    def newSession2(self):
-        currentWindowCount = self.tabCount
-        self.driver.execute_script(f'''window.open("{self.deviceURL}");''')
-        WebDriverWait(self.driver, self.WAIT_TIME).until(EC.number_of_windows_to_be(currentWindowCount + 1))
-        self.driver.switch_to.window(self.driver.window_handles[-1])
+    def clickNewTabButton(self):
+        """ """
+        self.driver.find_element(By.ID, 'new-tab-button').click()
         return None
 
     # Properties
@@ -134,14 +133,14 @@ class Manager:
         options.add_argument('disable-infobars')
         options.add_argument('enable-automation')
         options.add_argument('--disable-gpu')
-        options.add_argument('--disable-browser-side-navigation')
+        #options.add_argument('--disable-browser-side-navigation')
         options.add_argument('--disable-deb-shm-usage')
         options.add_argument('--no-sandbox')
         #options.add_argument('--headless')
         return {'service': Service(ChromeDriverManager().install()), 'chrome_options': options}
 
     # Setter Methods
-    def setDeviceURL(self, deviceIP, devicePort, protocol='http', project='SessionOpener', view=''):
+    def setDeviceURL(self, deviceIP, devicePort, protocol='http', project='ClientTest', view=''):
         """Generate the url string for the device being tested and set as the 'deviceURL' property
             
         Args:
@@ -151,8 +150,8 @@ class Manager:
             project: name of the project on the device (default: SessionOpener)
             view: page to use for the client test (default: '')
         """
-        #url = f"{protocol}://{deviceIP}:{devicePort}/data/perspective/client/{project}/{view}"
-        url = 'http://www.example.com/'
+        url = f"{protocol}://{deviceIP}:{devicePort}/data/perspective/client/{project}/{view}"
+        #url = 'http://www.example.com/'
         self.deviceURL = url
         return None
 
