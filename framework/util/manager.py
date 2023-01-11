@@ -63,7 +63,8 @@ class Manager:
             #WebDriverWait(self.driver, self.WAIT_TIME).until(EC.number_of_windows_to_be(currentWindowCount + 1))
             #self.driver.switch_to.window(self.driver.window_handles[-1])
             
-            self.newSession()
+            #self.newSession()
+            self.clickNewTabButton()
             #self.driver.execute_script('''window.open();''')
             #self.driver.switch_to.new_window()
             #sleep(self.WAIT_TIME)
@@ -115,6 +116,7 @@ class Manager:
 
     def clickNewTabButton(self):
         """ """
+        self.driver.implicitly_wait(self.WAIT_TIME)
         self.driver.find_element(By.ID, 'new-tab-button').click()
         return None
 
